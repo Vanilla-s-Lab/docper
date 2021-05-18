@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/docker_status_header.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,8 +26,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const padding = EdgeInsets.all(16.0);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(widget.title)));
+    return Row(children: [
+      Drawer(
+        child: ListView(
+          children: [
+            Padding(padding: padding, child: DockerHeader()),
+          ],
+        ),
+      ),
+      VerticalDivider(),
+    ]);
   }
 }
