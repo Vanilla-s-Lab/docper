@@ -32,7 +32,7 @@ class _DockerHeaderState extends State<DockerHeader> {
               if (snapshot.hasError) {
                 final e = snapshot.error.toString();
                 // https://stackoverflow.com/questions/52059024/show-dialog-on-widget
-                Future.delayed(Duration.zero, () => _showErrDialog(context, e));
+                Future.delayed(Duration.zero, () => _showErr(buildContext, e));
               } else {
                 return Text("Docker connected, version: ${snapshot.data}. ");
               }
@@ -60,7 +60,7 @@ class _DockerHeaderState extends State<DockerHeader> {
     }
   }
 
-  void _showErrDialog(BuildContext context, String errMessage) {
+  void _showErr(BuildContext context, String errMessage) {
     showDialog(
         context: context,
         barrierDismissible: false,
