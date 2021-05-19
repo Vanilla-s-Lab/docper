@@ -56,7 +56,7 @@ class _DockerHeaderState extends State<DockerHeader> {
       return cmdJson["Client"]["Version"];
     } on ShellException catch (se) {
       final errMessage = se.result.stderr;
-      throw Exception(errMessage);
+      return Future.error(Exception(errMessage));
     }
   }
 
