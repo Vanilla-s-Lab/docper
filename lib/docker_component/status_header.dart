@@ -38,7 +38,7 @@ class _DockerHeaderState extends State<DockerHeader> {
               }
             }
 
-            return Text("Connecting docker, please wait. ");
+            return Text("Connecting docker, please wait... ");
           }),
     );
   }
