@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:process_run/shell_run.dart';
-import 'package:untitled/docker_component/docker_events.dart';
+import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerHeader extends StatefulWidget {
   final EventBus _eventBus;

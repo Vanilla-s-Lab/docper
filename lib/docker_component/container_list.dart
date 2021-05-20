@@ -1,6 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/docker_component/docker_events.dart';
+import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerContainerList extends StatefulWidget {
   final EventBus _eventBus;
