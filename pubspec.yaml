@@ -31,6 +31,8 @@ dependencies:
 
   # https://pub.dev/packages/process_run
   process_run: ^0.12.1
+  # https://pub.dev/packages/event_bus
+  event_bus: ^2.0.0
 
 dev_dependencies:
   flutter_test:

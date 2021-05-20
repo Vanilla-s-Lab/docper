@@ -2,11 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:process_run/shell_run.dart';
+import 'package:untitled/docker_component/docker_events.dart';
 
 class DockerHeader extends StatefulWidget {
-  const DockerHeader({Key key}) : super(key: key);
+  final EventBus _eventBus;
+
+  const DockerHeader(this._eventBus, {Key key}) : super(key: key);
 
   @override
   _DockerHeaderState createState() => _DockerHeaderState();
@@ -34,6 +38,8 @@ class _DockerHeaderState extends State<DockerHeader> {
                 // https://stackoverflow.com/questions/52059024/show-dialog-on-widget
                 Future.delayed(Duration.zero, () => _showErr(buildContext, e));
               } else {
+                // Success connected to docker.
+                widget._eventBus.fire(new DockerIsRunningEvent());
                 return Text("Docker connected, version: ${snapshot.data}. ");
               }
             }
