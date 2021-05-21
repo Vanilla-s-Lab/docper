@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:core';
+
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:process_run/shell_run.dart';
+import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerContainerList extends StatefulWidget {
@@ -28,7 +33,62 @@ class _DockerContainerListState extends State<DockerContainerList> {
     if (!_dockerIsRunning) {
       return SizedBox.shrink();
     } else {
-      return Text("Docker is running! I will loading container list here. ");
+      final _containerListFuture = _newContainerListFuture();
+
+      return ListView(
+        // https://stackoverflow.com/questions/50252569/vertical-viewport-was-given-unbounded-height
+        shrinkWrap: true,
+        children: [
+          // Text("Container List"),
+          FutureBuilder(
+            future: _containerListFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text("Fatal error: ${snapshot.data}. ");
+                } else {
+                  final containerData = snapshot.data as List<ContainerInfo>;
+                  final containerInfoTiles = containerData.map((e) => ListTile(
+                        leading: Icon(
+                          Icons.layers,
+                          color: e.isRunning() ? Colors.green : null,
+                        ),
+                        title: Text(e.names),
+                        subtitle: Text(e.status),
+                        onTap: () {},
+                        trailing: Icon(Icons.arrow_right),
+                      ));
+
+                  return ListView(shrinkWrap: true, children: [
+                    ...ListTile.divideTiles(
+                        context: context,
+                        tiles: containerInfoTiles.toList().reversed)
+                  ]);
+                }
+              }
+
+              return Text("loading... ");
+            },
+          ),
+        ],
+      );
     }
+  }
+
+  static const DOCKER_PS_CMD = "docker ps -a --format '{{json .}}'";
+
+  Future<List<ContainerInfo>> _newContainerListFuture() async {
+    final shell = Shell();
+
+    final cmdResult = await shell.run(DOCKER_PS_CMD);
+    final rawOutput = cmdResult[0].stdout;
+
+    final containerStrings = (rawOutput as String).split("\n");
+    containerStrings.removeLast();
+
+    return containerStrings
+        .map((e) => JsonDecoder().convert(e))
+        .map((e) => ContainerInfo(e["Names"], e["Status"], e["State"]))
+        .toList();
   }
 }
