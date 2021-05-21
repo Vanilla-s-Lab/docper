@@ -48,6 +48,10 @@ class _DockerContainerListState extends State<DockerContainerList> {
                   return Text("Fatal error: ${snapshot.data}. ");
                 } else {
                   final containerData = snapshot.data as List<ContainerInfo>;
+                  if (containerData.isEmpty) {
+                    return Text("No container found. ");
+                  }
+
                   final containerInfoTiles = containerData.map((e) => ListTile(
                         leading: Icon(
                           Icons.layers,
