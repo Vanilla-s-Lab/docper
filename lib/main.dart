@@ -33,15 +33,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: padding,
-        children: [
-          DockerHeader(_drawerBus),
-          Divider(),
-          DockerContainerList(_drawerBus)
-        ],
+    return Row(children: [
+      Drawer(
+        child: ListView(
+          padding: padding,
+          children: [
+            DockerHeader(_drawerBus),
+            Divider(),
+            DockerContainerList(_drawerBus)
+          ],
+        ),
       ),
-    );
+      Expanded(child: Center(child: Text("Tap any container to view files. ")))
+    ]);
   }
 }
