@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Docker file transfer helper')),
         body: MyHomePage(),
       ),
-      // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -50,7 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      Expanded(child: FileExplorer(_expandedBus))
+      Expanded(
+        child: Padding(
+          padding: padding,
+          child: FileExplorer(_expandedBus),
+        ),
+      ),
     ]);
   }
 }

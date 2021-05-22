@@ -13,24 +13,24 @@ class FileExplorer extends StatefulWidget {
 }
 
 class _FileExplorerExpendedState extends State<FileExplorer> {
-  ContainerInfo _tapedContainerInfo;
+  ContainerInfo _tapedContainer;
 
   @override
   void initState() {
     super.initState();
     widget._expandedBus.on<TapContainerEvent>().listen((event) {
-      setState(() => _tapedContainerInfo = event.containerInfo);
+      setState(() => _tapedContainer = event.containerInfo);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(_tapedContainerInfo != null
-            ? _tapedContainerInfo.toString()
-            : "Tap a container to look up files. "),
-      ),
+    if (_tapedContainer == null) return Container();
+
+    final appBarTitle = "${_tapedContainer.id} - ${_tapedContainer.images}";
+    return Scaffold(
+      appBar: AppBar(title: Text(appBarTitle)),
+      body: Container(),
     );
   }
 }

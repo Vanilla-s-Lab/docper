@@ -93,7 +93,8 @@ class _DockerContainerListState extends State<DockerContainerList> {
 
     return containerStrings
         .map((e) => JsonDecoder().convert(e))
-        .map((e) => ContainerInfo(e["Names"], e["Status"], e["State"]))
+        .map((e) => ContainerInfo(
+            e["Names"], e["Status"], e["State"], e["ID"], e["Image"]))
         .toList();
   }
 }

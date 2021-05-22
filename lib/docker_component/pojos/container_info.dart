@@ -4,7 +4,10 @@ class ContainerInfo {
 
   String _state;
 
-  ContainerInfo(this.names, this.status, this._state);
+  String id;
+  String images;
+
+  ContainerInfo(this.names, this.status, this._state, this.id, this.images);
 
   bool isRunning() => this._state == "running";
 }
