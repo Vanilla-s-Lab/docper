@@ -9,8 +9,10 @@ import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerContainerList extends StatefulWidget {
   final EventBus _eventBus;
+  final EventBus _expandedBus;
 
-  const DockerContainerList(this._eventBus, {Key key}) : super(key: key);
+  const DockerContainerList(this._eventBus, this._expandedBus, {Key key})
+      : super(key: key);
 
   @override
   _DockerContainerListState createState() => _DockerContainerListState();
@@ -51,7 +53,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
                   ),
                   title: Text(e.names),
                   subtitle: Text(e.status),
-                  onTap: () {},
+                  onTap: () => widget._expandedBus.fire(TapContainerEvent(e)),
                   trailing: Icon(Icons.arrow_right),
                   dense: true,
                 ));

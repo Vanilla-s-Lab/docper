@@ -1,5 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/docker_component/expanded_file.dart';
 
 import 'docker_component/container_list.dart';
 import 'docker_component/status_header.dart';
@@ -31,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static const padding = EdgeInsets.all(16.0);
   EventBus _drawerBus = EventBus();
+  EventBus _expandedBus = EventBus();
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,12 @@ class _MyHomePageState extends State<MyHomePage> {
               DockerHeader(_drawerBus),
               Divider(),
               Text("Container list", textAlign: TextAlign.center),
-              DockerContainerList(_drawerBus),
+              DockerContainerList(_drawerBus, _expandedBus),
             ],
           ),
         ),
       ),
-      Expanded(child: Center(child: Text("Tap any container to view files. ")))
+      Expanded(child: FileExplorer(_expandedBus))
     ]);
   }
 }
