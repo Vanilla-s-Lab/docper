@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text('Flutter Demo')),
+        appBar: AppBar(title: Text('Docker file transfer helper')),
         body: MyHomePage(),
       ),
       // MyHomePage(title: 'Flutter Demo Home Page'),

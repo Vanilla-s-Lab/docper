@@ -42,11 +42,13 @@ class _DockerHeaderState extends State<DockerHeader> {
               } else {
                 // Success connected to docker.
                 widget._eventBus.fire(new DockerIsRunningEvent());
-                return Text("Docker connected, version: ${snapshot.data}. ");
+                return Text("Docker connected, version: ${snapshot.data}. ",
+                    textAlign: TextAlign.center);
               }
             }
 
-            return Text("Connecting docker, please wait... ");
+            return Text("Connecting docker, please wait... ",
+                textAlign: TextAlign.center);
           }),
     );
   }

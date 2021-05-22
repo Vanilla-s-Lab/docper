@@ -39,7 +39,6 @@ class _DockerContainerListState extends State<DockerContainerList> {
         // https://stackoverflow.com/questions/50252569/vertical-viewport-was-given-unbounded-height
         shrinkWrap: true,
         children: [
-          // Text("Container List"),
           FutureBuilder(
             future: _containerListFuture,
             builder: (context, snapshot) {
@@ -49,7 +48,8 @@ class _DockerContainerListState extends State<DockerContainerList> {
                 } else {
                   final containerData = snapshot.data as List<ContainerInfo>;
                   if (containerData.isEmpty) {
-                    return Text("No container found. ");
+                    return Text("No container found. ",
+                        textAlign: TextAlign.center);
                   }
 
                   final containerInfoTiles = containerData.map((e) => ListTile(
@@ -64,6 +64,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
                       ));
 
                   return ListView(shrinkWrap: true, children: [
+                    Text("Container list", textAlign: TextAlign.center),
                     ...ListTile.divideTiles(
                         context: context,
                         tiles: containerInfoTiles.toList().reversed)
@@ -71,7 +72,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
                 }
               }
 
-              return Text("loading... ");
+              return Text("loading... ", textAlign: TextAlign.center);
             },
           ),
         ],
