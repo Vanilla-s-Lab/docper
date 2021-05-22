@@ -34,7 +34,9 @@ class _DockerHeaderState extends State<DockerHeader> {
             // https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
-                final e = snapshot.error.toString();
+                // https://stackoverflow.com/questions/10247073/urlencoding-in-dart
+                final e = Uri.decodeFull(snapshot.error.toString());
+
                 // https://stackoverflow.com/questions/52059024/show-dialog-on-widget
                 Future.delayed(Duration.zero, () => _showErr(buildContext, e));
               } else {
