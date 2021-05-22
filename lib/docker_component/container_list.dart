@@ -58,15 +58,22 @@ class _DockerContainerListState extends State<DockerContainerList> {
                   dense: true,
                 ));
             return Expanded(
-              child: Scrollbar(
-                child: ListView(
-                  children: [
-                    ...ListTile.divideTiles(
-                      context: buildContext,
-                      tiles: containerInfoTiles.toList(),
-                    ),
-                    Divider(),
-                  ],
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 2.0,
+                  ),
+                ),
+                child: Scrollbar(
+                  child: ListView(
+                    children: [
+                      ...ListTile.divideTiles(
+                        context: buildContext,
+                        tiles: containerInfoTiles.toList(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

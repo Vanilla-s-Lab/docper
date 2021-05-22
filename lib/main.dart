@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               DockerHeader(_drawerBus),
               Divider(),
-              Text("Container list", textAlign: TextAlign.center),
+              AppBar(title: Text("Container list")),
               DockerContainerList(_drawerBus, _expandedBus),
             ],
           ),

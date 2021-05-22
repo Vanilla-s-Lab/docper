@@ -27,7 +27,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   Widget build(BuildContext context) {
     if (_tapedContainer == null) return Container();
 
-    final appBarTitle = "${_tapedContainer.id} - ${_tapedContainer.images}";
+    final appBarTitle = "${_tapedContainer.id} - \"${_tapedContainer.images}\"";
     return Scaffold(
       appBar: AppBar(title: Text(appBarTitle)),
       body: Container(),
