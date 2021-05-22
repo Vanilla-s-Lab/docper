@@ -29,55 +29,51 @@ class _DockerContainerListState extends State<DockerContainerList> {
 
   @override
   Widget build(BuildContext context) {
+    final loading = Expanded(child: Center(child: CircularProgressIndicator()));
+
     // https://fluttercentral.com/Articles/Post/1272/How_to_show_an_empty_widget_in_flutter
-    if (!_dockerIsRunning) {
-      return SizedBox.shrink();
-    } else {
+    if (_dockerIsRunning) {
       final _containerListFuture = _newContainerListFuture();
 
-      return ListView(
-        // https://stackoverflow.com/questions/50252569/vertical-viewport-was-given-unbounded-height
-        shrinkWrap: true,
-        children: [
-          FutureBuilder(
-            future: _containerListFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text("Fatal error: ${snapshot.data}. ");
-                } else {
-                  final containerData = snapshot.data as List<ContainerInfo>;
-                  if (containerData.isEmpty) {
-                    return Text("No container found. ",
-                        textAlign: TextAlign.center);
-                  }
+      return FutureBuilder(
+        future: _containerListFuture,
+        builder: (buildContext, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final containerData = snapshot.data as List<ContainerInfo>;
+            if (containerData.isEmpty) {
+              return Text("No container found. ", textAlign: TextAlign.center);
+            }
 
-                  final containerInfoTiles = containerData.map((e) => ListTile(
-                        leading: Icon(
-                          Icons.layers,
-                          color: e.isRunning() ? Colors.green : null,
-                        ),
-                        title: Text(e.names),
-                        subtitle: Text(e.status),
-                        onTap: () {},
-                        trailing: Icon(Icons.arrow_right),
-                      ));
+            final containerInfoTiles = containerData.map((e) => ListTile(
+                  leading: Icon(
+                    Icons.layers,
+                    color: e.isRunning() ? Colors.green : null,
+                  ),
+                  title: Text(e.names),
+                  subtitle: Text(e.status),
+                  onTap: () {},
+                  trailing: Icon(Icons.arrow_right),
+                  dense: true,
+                ));
+            return Expanded(
+              child: ListView(
+                children: [
+                  ...ListTile.divideTiles(
+                    context: buildContext,
+                    tiles: containerInfoTiles.toList(),
+                  ),
+                  Divider(),
+                ],
+              ),
+            );
+          }
 
-                  return ListView(shrinkWrap: true, children: [
-                    Text("Container list", textAlign: TextAlign.center),
-                    ...ListTile.divideTiles(
-                        context: context,
-                        tiles: containerInfoTiles.toList().reversed)
-                  ]);
-                }
-              }
-
-              return Text("loading... ", textAlign: TextAlign.center);
-            },
-          ),
-        ],
+          return loading;
+        },
       );
     }
+
+    return loading;
   }
 
   static const DOCKER_PS_CMD = "docker ps -a --format '{{json .}}'";

@@ -1,7 +1,8 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/docker_component/container_list.dart';
-import 'package:untitled/docker_component/status_header.dart';
+
+import 'docker_component/container_list.dart';
+import 'docker_component/status_header.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,13 +36,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Row(children: [
       Drawer(
-        child: ListView(
+        child: Padding(
           padding: padding,
-          children: [
-            DockerHeader(_drawerBus),
-            Divider(),
-            DockerContainerList(_drawerBus)
-          ],
+          child: Column(
+            children: [
+              DockerHeader(_drawerBus),
+              Divider(),
+              Text("Container list", textAlign: TextAlign.center),
+              Divider(),
+              DockerContainerList(_drawerBus),
+            ],
+          ),
         ),
       ),
       Expanded(child: Center(child: Text("Tap any container to view files. ")))
