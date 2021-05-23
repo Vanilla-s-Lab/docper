@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:process_run/shell_run.dart';
 import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 import 'package:untitled/docker_finder.dart';
@@ -77,13 +77,11 @@ class _DockerContainerListState extends State<DockerContainerList> {
     return loadingProgressBar;
   }
 
-  final cmdDockerPs = "${dockerCommand()} ps -a --format '{{json .}}'";
+  final cmdDockerPs = "${dockerCommand()} ps -a --format json";
 
   Future<List<ContainerInfo>> _newContainerListFuture() async {
-    final shell = Shell();
-
-    final cmdResult = await shell.run(cmdDockerPs);
-    final rawOutput = cmdResult[0].stdout;
+    final cmdResult = await Process.run(cmdDockerPs, [], runInShell: true);
+    final rawOutput = cmdResult.stdout;
 
     final containerStrings = (rawOutput as String).split("\n");
     containerStrings.removeLast();

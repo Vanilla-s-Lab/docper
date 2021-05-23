@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:process_run/shell_run.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 import 'package:untitled/docker_finder.dart';
 
@@ -58,21 +57,15 @@ class _DockerHeaderState extends State<DockerHeader> {
     );
   }
 
-  final cmdDockerVersion = "${dockerCommand()} version --format '{{json .}}'";
+  final cmdDockerVersion = "${dockerCommand()} version --format json";
 
   Future<String> _newDockerVerFuture() async {
-    final shell = Shell();
+    final cmdResult = await Process.run(cmdDockerVersion, [], runInShell: true);
+    if (cmdResult.exitCode != 0) return Future.error(cmdResult.stderr);
 
-    try {
-      final cmdResult = await shell.run(cmdDockerVersion);
-      final resultJsonString = cmdResult[0].stdout;
-
-      final cmdJson = JsonDecoder().convert(resultJsonString);
-      return cmdJson["Client"]["Version"];
-    } on ShellException catch (se) {
-      final errMessage = se.result.stderr;
-      return Future.error(Exception(errMessage));
-    }
+    final resultJsonString = cmdResult.stdout;
+    final cmdJson = JsonDecoder().convert(resultJsonString);
+    return cmdJson["Client"]["Version"];
   }
 
   void _showErr(BuildContext context, String errMessage) {
