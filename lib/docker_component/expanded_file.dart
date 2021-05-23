@@ -21,11 +21,20 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     widget._expandedBus.on<TapContainerEvent>().listen((event) {
       setState(() => _tapedContainer = event.containerInfo);
     });
+
+    widget._expandedBus.on<RefreshAllEvent>().listen((_) {
+      setState(() => _tapedContainer = null);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_tapedContainer == null) return Container();
+    if (_tapedContainer == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text("File List")),
+        body: Center(child: Text("Tap a container to view files.")),
+      );
+    }
 
     final appBarTitle = "${_tapedContainer.id} - \"${_tapedContainer.images}\"";
     return Scaffold(

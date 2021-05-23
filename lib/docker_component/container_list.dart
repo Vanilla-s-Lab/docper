@@ -24,11 +24,10 @@ class _DockerContainerListState extends State<DockerContainerList> {
   @override
   void initState() {
     super.initState();
-    widget._drawerBus.on<DockerIsRunningEvent>().listen((_) {
+    widget._drawerBus.on<DockerIsRunningEvent>().listen((event) {
       setState(() => _dockerIsRunning = true);
+      widget._expandedBus.fire(event);
     });
-
-    widget._expandedBus.on<RefreshAllEvent>().listen((_) {});
   }
 
   @override
@@ -37,10 +36,8 @@ class _DockerContainerListState extends State<DockerContainerList> {
 
     // https://fluttercentral.com/Articles/Post/1272/How_to_show_an_empty_widget_in_flutter
     if (_dockerIsRunning) {
-      final _containerListFuture = _newContainerListFuture();
-
       return FutureBuilder(
-        future: _containerListFuture,
+        future: _newContainerListFuture(),
         builder: (buildContext, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final containerData = snapshot.data as List<ContainerInfo>;
@@ -62,10 +59,12 @@ class _DockerContainerListState extends State<DockerContainerList> {
             return Scrollbar(
               child: ListView(
                 children: [
+                  Divider(),
                   ...ListTile.divideTiles(
                     context: buildContext,
-                    tiles: containerInfoTiles.toList(),
+                    tiles: containerInfoTiles.toList().reversed,
                   ),
+                  Divider(),
                 ],
               ),
             );
