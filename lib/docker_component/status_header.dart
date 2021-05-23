@@ -6,6 +6,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:process_run/shell_run.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
+import 'package:untitled/docker_finder.dart';
 
 class DockerHeader extends StatefulWidget {
   final EventBus _drawerBus;
@@ -57,13 +58,13 @@ class _DockerHeaderState extends State<DockerHeader> {
     );
   }
 
-  static const VERSION_CMD = "docker version --format '{{json .}}'";
+  final cmdDockerVersion = "${dockerCommand()} version --format '{{json .}}'";
 
   Future<String> _newDockerVerFuture() async {
     final shell = Shell();
 
     try {
-      final cmdResult = await shell.run(VERSION_CMD);
+      final cmdResult = await shell.run(cmdDockerVersion);
       final resultJsonString = cmdResult[0].stdout;
 
       final cmdJson = JsonDecoder().convert(resultJsonString);

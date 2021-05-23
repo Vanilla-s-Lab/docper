@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:process_run/shell_run.dart';
 import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
+import 'package:untitled/docker_finder.dart';
 
 class DockerContainerList extends StatefulWidget {
   final EventBus _drawerBus;
@@ -76,12 +77,12 @@ class _DockerContainerListState extends State<DockerContainerList> {
     return loadingProgressBar;
   }
 
-  static const DOCKER_PS_CMD = "docker ps -a --format '{{json .}}'";
+  final cmdDockerPs = "${dockerCommand()} ps -a --format '{{json .}}'";
 
   Future<List<ContainerInfo>> _newContainerListFuture() async {
     final shell = Shell();
 
-    final cmdResult = await shell.run(DOCKER_PS_CMD);
+    final cmdResult = await shell.run(cmdDockerPs);
     final rawOutput = cmdResult[0].stdout;
 
     final containerStrings = (rawOutput as String).split("\n");

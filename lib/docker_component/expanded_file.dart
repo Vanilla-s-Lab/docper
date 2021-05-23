@@ -39,7 +39,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Images: \"${_tapedContainer.images}\"")),
+      appBar: AppBar(title: Text("\"${_tapedContainer.images}\"")),
       body: BorderedContainer(),
     );
   }
