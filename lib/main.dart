@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled/docker_component/expanded_file.dart';
 
 import 'docker_component/container_list.dart';
+import 'docker_component/pojos/events.dart';
 import 'docker_component/status_header.dart';
 
 void main() {
@@ -43,17 +44,28 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               DockerHeader(_drawerBus),
               Divider(),
-              AppBar(title: Text("Container list")),
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue,
-                      width: 2.0,
+                child: Scaffold(
+                  appBar: AppBar(title: Text("Container list")),
+                  body: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue,
+                        width: 2.0,
+                      ),
                     ),
+                    child: DockerContainerList(_drawerBus, _expandedBus),
                   ),
-                  child: DockerContainerList(_drawerBus, _expandedBus),
+
+                  // https://api.flutter.dev/flutter/material/FloatingActionButton-class.html
+                  floatingActionButton: FloatingActionButton(
+                    child: Icon(Icons.refresh),
+                    onPressed: () {
+                      _drawerBus.fire(RefreshAllEvent());
+                      _expandedBus.fire(RefreshAllEvent());
+                    },
+                  ),
                 ),
               )
             ],

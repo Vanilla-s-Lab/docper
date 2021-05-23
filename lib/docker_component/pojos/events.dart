@@ -9,3 +9,7 @@ class TapContainerEvent {
 
   TapContainerEvent(this.containerInfo);
 }
+
+class RefreshAllEvent {
+  RefreshAllEvent();
+}

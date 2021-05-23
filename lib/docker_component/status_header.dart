@@ -8,9 +8,9 @@ import 'package:process_run/shell_run.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerHeader extends StatefulWidget {
-  final EventBus _eventBus;
+  final EventBus _drawerBus;
 
-  const DockerHeader(this._eventBus, {Key key}) : super(key: key);
+  const DockerHeader(this._drawerBus, {Key key}) : super(key: key);
 
   @override
   _DockerHeaderState createState() => _DockerHeaderState();
@@ -23,6 +23,10 @@ class _DockerHeaderState extends State<DockerHeader> {
   void initState() {
     super.initState();
     _currentDockerVerFuture = _newDockerVerFuture();
+
+    widget._drawerBus.on<RefreshAllEvent>().listen((event) {
+      setState(() => {_currentDockerVerFuture = _newDockerVerFuture()});
+    });
   }
 
   @override
@@ -41,7 +45,7 @@ class _DockerHeaderState extends State<DockerHeader> {
                 Future.delayed(Duration.zero, () => _showErr(buildContext, e));
               } else {
                 // Success connected to docker.
-                widget._eventBus.fire(new DockerIsRunningEvent());
+                widget._drawerBus.fire(new DockerIsRunningEvent());
                 return Text("Docker connected, version: ${snapshot.data}. ",
                     textAlign: TextAlign.center);
               }

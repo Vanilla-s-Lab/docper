@@ -8,10 +8,10 @@ import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 
 class DockerContainerList extends StatefulWidget {
-  final EventBus _eventBus;
+  final EventBus _drawerBus;
   final EventBus _expandedBus;
 
-  const DockerContainerList(this._eventBus, this._expandedBus, {Key key})
+  const DockerContainerList(this._drawerBus, this._expandedBus, {Key key})
       : super(key: key);
 
   @override
@@ -24,9 +24,11 @@ class _DockerContainerListState extends State<DockerContainerList> {
   @override
   void initState() {
     super.initState();
-    widget._eventBus.on<DockerIsRunningEvent>().listen((_) {
+    widget._drawerBus.on<DockerIsRunningEvent>().listen((_) {
       setState(() => _dockerIsRunning = true);
     });
+
+    widget._expandedBus.on<RefreshAllEvent>().listen((_) {});
   }
 
   @override
