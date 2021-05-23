@@ -57,14 +57,18 @@ class _DockerHeaderState extends State<DockerHeader> {
     );
   }
 
-  final cmdDockerVersion = "${dockerCommand()} version --format json";
-
   Future<String> _newDockerVerFuture() async {
-    final cmdResult = await Process.run(cmdDockerVersion, [], runInShell: true);
+    final cmdResult = await Process.run(
+      dockerCommand(),
+      ["version", "--format='{{json .}}'"],
+      runInShell: true,
+    );
     if (cmdResult.exitCode != 0) return Future.error(cmdResult.stderr);
 
-    final resultJsonString = cmdResult.stdout;
-    final cmdJson = JsonDecoder().convert(resultJsonString);
+    final resultJsonString = cmdResult.stdout.toString();
+    final jsTrim = resultJsonString.substring(1, resultJsonString.length - 2);
+
+    final cmdJson = JsonDecoder().convert(jsTrim);
     return cmdJson["Client"]["Version"];
   }
 

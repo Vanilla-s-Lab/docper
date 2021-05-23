@@ -77,13 +77,17 @@ class _DockerContainerListState extends State<DockerContainerList> {
     return loadingProgressBar;
   }
 
-  final cmdDockerPs = "${dockerCommand()} ps -a --format json";
-
   Future<List<ContainerInfo>> _newContainerListFuture() async {
-    final cmdResult = await Process.run(cmdDockerPs, [], runInShell: true);
-    final rawOutput = cmdResult.stdout;
+    final cmdResult = await Process.run(
+      dockerCommand(),
+      ["ps", "-a", "--format='{{json .}}'"],
+      runInShell: true,
+    );
+    final rawOutput = cmdResult.stdout.toString();
+    if (rawOutput.isEmpty) return [];
 
-    final containerStrings = (rawOutput as String).split("\n");
+    final jsonStringTrim = rawOutput.substring(1, rawOutput.length - 2);
+    final containerStrings = jsonStringTrim.split("\n");
     containerStrings.removeLast();
 
     return containerStrings
