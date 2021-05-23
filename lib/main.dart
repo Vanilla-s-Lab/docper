@@ -1,5 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/bordered_container.dart';
 import 'package:untitled/docker_component/expanded_file.dart';
 
 import 'docker_component/container_list.dart';
@@ -47,14 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: Scaffold(
                   appBar: AppBar(title: Text("Container list")),
-                  body: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2.0,
-                      ),
-                    ),
+                  body: BorderedContainer(
                     child: DockerContainerList(_drawerBus, _expandedBus),
                   ),
 
