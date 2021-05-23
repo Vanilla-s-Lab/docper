@@ -32,14 +32,17 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   Widget build(BuildContext context) {
     if (_tapedContainer == null) {
       return Scaffold(
-          appBar: AppBar(title: Text("File List")),
+          appBar: AppBar(title: Text("File List"), centerTitle: true),
           body: BorderedContainer(
             child: Center(child: Text("Tap a container to view files.")),
           ));
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("\"${_tapedContainer.images}\"")),
+      appBar: AppBar(
+        title: Text("\"${_tapedContainer.images}\""),
+        centerTitle: true,
+      ),
       body: BorderedContainer(),
     );
   }

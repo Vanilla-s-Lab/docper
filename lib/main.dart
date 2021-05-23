@@ -37,7 +37,10 @@ class MyApp extends StatelessWidget {
       //   ),
       // ),
       home: Scaffold(
-        appBar: AppBar(title: Text('Docker file transfer helper')),
+        appBar: AppBar(
+          title: Text('Docker file transfer helper'),
+          centerTitle: true,
+        ),
         body: MyHomePage(),
       ),
     );
@@ -68,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Divider(),
               Expanded(
                 child: Scaffold(
-                  appBar: AppBar(title: Text("Container list")),
+                  appBar: AppBar(
+                    title: Text("Container list"),
+                    centerTitle: true,
+                  ),
                   body: BorderedContainer(
                     child: DockerContainerList(_drawerBus, _expandedBus),
                   ),
