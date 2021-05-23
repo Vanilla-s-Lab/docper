@@ -15,6 +15,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // https://stackoverflow.com/questions/49015038/removing-the-drop-shadow-from-a-scaffold-appbar-in-flutter
+      theme: ThemeData(appBarTheme: AppBarTheme(elevation: 0)),
       home: Scaffold(
         appBar: AppBar(title: Text('Docker file transfer helper')),
         body: MyHomePage(),

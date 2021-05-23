@@ -51,15 +51,13 @@ class _DockerContainerListState extends State<DockerContainerList> {
                     color: e.isRunning() ? Colors.green : null,
                   ),
                   title: Text(e.names),
-                  subtitle: Text(e.status),
+                  subtitle: Text(e.id),
                   onTap: () => widget._expandedBus.fire(TapContainerEvent(e)),
                   trailing: Icon(Icons.arrow_right),
-                  dense: true,
                 ));
             return Scrollbar(
               child: ListView(
                 children: [
-                  Divider(),
                   ...ListTile.divideTiles(
                     context: buildContext,
                     tiles: containerInfoTiles.toList().reversed,
@@ -91,8 +89,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
 
     return containerStrings
         .map((e) => JsonDecoder().convert(e))
-        .map((e) => ContainerInfo(
-            e["Names"], e["Status"], e["State"], e["ID"], e["Image"]))
+        .map((e) => ContainerInfo(e["Names"], e["ID"], e["State"], e["Image"]))
         .toList();
   }
 }

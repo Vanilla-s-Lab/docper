@@ -1,5 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/bordered_container.dart';
 import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
 
@@ -31,15 +32,15 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   Widget build(BuildContext context) {
     if (_tapedContainer == null) {
       return Scaffold(
-        appBar: AppBar(title: Text("File List")),
-        body: Center(child: Text("Tap a container to view files.")),
-      );
+          appBar: AppBar(title: Text("File List")),
+          body: BorderedContainer(
+            child: Center(child: Text("Tap a container to view files.")),
+          ));
     }
 
-    final appBarTitle = "${_tapedContainer.id} - \"${_tapedContainer.images}\"";
     return Scaffold(
-      appBar: AppBar(title: Text(appBarTitle)),
-      body: Container(),
+      appBar: AppBar(title: Text("Images: \"${_tapedContainer.images}\"")),
+      body: BorderedContainer(),
     );
   }
 }
