@@ -44,7 +44,18 @@ class _MyHomePageState extends State<MyHomePage> {
               DockerHeader(_drawerBus),
               Divider(),
               AppBar(title: Text("Container list")),
-              DockerContainerList(_drawerBus, _expandedBus),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: DockerContainerList(_drawerBus, _expandedBus),
+                ),
+              )
             ],
           ),
         ),

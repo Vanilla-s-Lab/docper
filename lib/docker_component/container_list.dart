@@ -31,7 +31,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
 
   @override
   Widget build(BuildContext context) {
-    final loading = Expanded(child: Center(child: CircularProgressIndicator()));
+    final loadingProgressBar = Center(child: CircularProgressIndicator());
 
     // https://fluttercentral.com/Articles/Post/1272/How_to_show_an_empty_widget_in_flutter
     if (_dockerIsRunning) {
@@ -43,7 +43,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
           if (snapshot.connectionState == ConnectionState.done) {
             final containerData = snapshot.data as List<ContainerInfo>;
             if (containerData.isEmpty) {
-              return Text("No container found. ", textAlign: TextAlign.center);
+              return Center(child: Text("No container found. "));
             }
 
             final containerInfoTiles = containerData.map((e) => ListTile(
@@ -57,34 +57,24 @@ class _DockerContainerListState extends State<DockerContainerList> {
                   trailing: Icon(Icons.arrow_right),
                   dense: true,
                 ));
-            return Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.blue,
-                    width: 2.0,
+            return Scrollbar(
+              child: ListView(
+                children: [
+                  ...ListTile.divideTiles(
+                    context: buildContext,
+                    tiles: containerInfoTiles.toList(),
                   ),
-                ),
-                child: Scrollbar(
-                  child: ListView(
-                    children: [
-                      ...ListTile.divideTiles(
-                        context: buildContext,
-                        tiles: containerInfoTiles.toList(),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
             );
           }
 
-          return loading;
+          return loadingProgressBar;
         },
       );
     }
 
-    return loading;
+    return loadingProgressBar;
   }
 
   static const DOCKER_PS_CMD = "docker ps -a --format '{{json .}}'";
