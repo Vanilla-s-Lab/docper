@@ -19,10 +19,19 @@ class FileExplorer extends StatefulWidget {
   _FileExplorerExpendedState createState() => _FileExplorerExpendedState();
 }
 
+extension PathExtension on List<String> {
+  String pathString() {
+    if (this.isEmpty) return "/";
+    return "/${this.join("/")}/";
+  }
+}
+
 class _FileExplorerExpendedState extends State<FileExplorer> {
   ContainerInfo _tapedContainer;
   Future<List<ContainerFile>> _containerFileListFuture;
-  String _currentPath = "/";
+
+  List<String> _currentPath = [];
+  EventBus _tapFileBus = EventBus();
 
   @override
   void initState() {
@@ -30,6 +39,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     widget._expandedBus.on<TapContainerEvent>().listen((event) {
       setState(() {
         _tapedContainer = event.containerInfo;
+        _currentPath = [];
         _containerFileListFuture = _newContainerFilesFuture();
       });
     });
@@ -37,21 +47,51 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     widget._expandedBus.on<RefreshAllEvent>().listen((_) {
       setState(() {
         _tapedContainer = null;
-        _currentPath = "/";
+        _currentPath = [];
       });
+    });
+
+    _tapFileBus.on<TapFileEvent>().listen((event) {
+      final tapedFile = event.containerFile;
+      if (tapedFile.type() == FileSystemEntityType.directory) {
+        setState(() {
+          final tapedFileName = tapedFile.fileName;
+          if (tapedFileName == ".") {
+            // Refresh current path, so do nothing for _currentPath.
+          } else if (tapedFileName == "..") {
+            if (_currentPath.isNotEmpty) _currentPath.removeLast();
+            // If _currentPath empty, means current path is "/".
+          } else {
+            _currentPath.add(tapedFile.fileName);
+          }
+
+          _containerFileListFuture = _newContainerFilesFuture();
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final centerAppBar = AppBar(title: Text("File List"), centerTitle: true);
     if (_tapedContainer == null) {
       return Scaffold(
-          appBar: AppBar(title: Text("File List"), centerTitle: true),
+          appBar: centerAppBar,
           body: BorderedContainer(
             child: Center(child: Text("Tap a container to view files.")),
           ));
     }
 
+    if (!_tapedContainer.isRunning()) {
+      return Scaffold(
+          appBar: centerAppBar,
+          body: BorderedContainer(
+            child:
+                Center(child: Text("Not support stopped container yet : ( ")),
+          ));
+    }
+
+    final blueDivider = Divider(color: Colors.blue);
     return Scaffold(
       appBar: AppBar(
         title: Text("Container ID: " + _tapedContainer.id),
@@ -59,16 +99,22 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       ),
       body: BorderedContainer(
         child: Column(children: [
-          Text(_currentPath, maxLines: 1),
+          blueDivider,
+          Text(
+            _currentPath.pathString(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          blueDivider,
           Expanded(
             child: FutureBuilder(
               future: _containerFileListFuture,
               builder: (buildContext, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final containerFiles = snapshot.data as List<ContainerFile>;
-                  final fileWidgets = containerFiles.map((e) => FileWidget(e));
+                  final files = snapshot.data as List<ContainerFile>;
+                  final widgets = files.map((e) => FileWidget(e, _tapFileBus));
                   return ResponsiveGridList(
-                    children: [...fileWidgets],
+                    children: [...widgets],
                     desiredItemWidth: 71,
                   );
                 }
@@ -83,10 +129,12 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   }
 
   Future<List<ContainerFile>> _newContainerFilesFuture() async {
+    if (!_tapedContainer.isRunning()) return [];
+
     final tapedContainerId = _tapedContainer.id;
     final cmdResult = await Process.run(
       dockerCommand(),
-      ["exec", tapedContainerId, "ls", _currentPath, "-al"],
+      ["exec", tapedContainerId, "ls", _currentPath.pathString(), "-al"],
       runInShell: true,
     );
 
@@ -102,7 +150,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         .map((e) => e.split(" "))
         .map((e) => e.where((element) => element.isNotEmpty))
         // https://stackoverflow.com/questions/57730318/how-to-get-first-letter-of-string-in-flutter-dart
-        .map((e) => ContainerFile(e.first[0], e.last, e.toList()))
+        .map((e) => ContainerFile(e.first[0], e.toList()[8], e.toList()))
         .toList();
   }
 }
