@@ -52,9 +52,10 @@ class _DockerContainerListState extends State<DockerContainerList> {
                     color: e.isRunning() ? Colors.green : null,
                   ),
                   title: Text(e.names),
-                  subtitle: Text(e.id),
+                  subtitle: Text(e.image),
                   onTap: () => widget._expandedBus.fire(TapContainerEvent(e)),
                   trailing: Icon(Icons.arrow_right),
+                  dense: true,
                 ));
             return Scrollbar(
               child: ListView(
@@ -94,7 +95,7 @@ class _DockerContainerListState extends State<DockerContainerList> {
         // Each json string wrapped by a single quote, map to remove.
         .map((e) => e.substring(1, e.length - 1))
         .map((e) => JsonDecoder().convert(e))
-        .map((e) => ContainerInfo(e["Names"], e["ID"], e["State"], e["Image"]))
+        .map((e) => ContainerInfo(e["Names"], e["Image"], e["ID"], e["State"]))
         .toList();
   }
 }
