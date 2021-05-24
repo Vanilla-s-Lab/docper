@@ -82,15 +82,17 @@ class _DockerContainerListState extends State<DockerContainerList> {
       dockerCommand(),
       ["ps", "-a", "--format='{{json .}}'"],
       runInShell: true,
+      stdoutEncoding: Encoding.getByName("UTF-8"),
     );
     final rawOutput = cmdResult.stdout.toString();
     if (rawOutput.isEmpty) return [];
 
-    final jsonStringTrim = rawOutput.substring(1, rawOutput.length - 2);
-    final containerStrings = jsonStringTrim.split("\n");
+    final containerStrings = rawOutput.split("\n");
     containerStrings.removeLast();
 
     return containerStrings
+        // Each json string wrapped by a single quote, map to remove.
+        .map((e) => e.substring(1, e.length - 1))
         .map((e) => JsonDecoder().convert(e))
         .map((e) => ContainerInfo(e["Names"], e["ID"], e["State"], e["Image"]))
         .toList();
