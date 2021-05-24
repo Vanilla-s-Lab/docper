@@ -32,6 +32,9 @@ dependencies:
   # https://pub.dev/packages/event_bus
   event_bus: ^2.0.0
 
+  # https://pub.dev/packages/responsive_grid
+  responsive_grid: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
