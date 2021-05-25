@@ -19,11 +19,18 @@ class FileExplorer extends StatefulWidget {
   _FileExplorerExpendedState createState() => _FileExplorerExpendedState();
 }
 
+extension PathExtension on List<String> {
+  String pathString() {
+    if (this.isEmpty) return "/";
+    return "/${this.join("/")}/";
+  }
+}
+
 class _FileExplorerExpendedState extends State<FileExplorer> {
   ContainerInfo _tapedContainer;
   Future<List<ContainerFile>> _containerFileListFuture;
-  String _currentPath = "/";
 
+  List<String> _currentPath = [];
   EventBus _tapFileBus = EventBus();
 
   @override
@@ -32,7 +39,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     widget._expandedBus.on<TapContainerEvent>().listen((event) {
       setState(() {
         _tapedContainer = event.containerInfo;
-        _currentPath = "/";
+        _currentPath = [];
         _containerFileListFuture = _newContainerFilesFuture();
       });
     });
@@ -40,7 +47,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     widget._expandedBus.on<RefreshAllEvent>().listen((_) {
       setState(() {
         _tapedContainer = null;
-        _currentPath = "/";
+        _currentPath = [];
       });
     });
 
@@ -48,7 +55,16 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       final tapedFile = event.containerFile;
       if (tapedFile.type() == FileSystemEntityType.directory) {
         setState(() {
-          _currentPath += tapedFile.fileName + "/";
+          final tapedFileName = tapedFile.fileName;
+          if (tapedFileName == ".") {
+            // Refresh current path, so do nothing for _currentPath.
+          } else if (tapedFileName == "..") {
+            if (_currentPath.isNotEmpty) _currentPath.removeLast();
+            // If _currentPath empty, means current path is "/".
+          } else {
+            _currentPath.add(tapedFile.fileName);
+          }
+
           _containerFileListFuture = _newContainerFilesFuture();
         });
       }
@@ -84,7 +100,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       body: BorderedContainer(
         child: Column(children: [
           blueDivider,
-          Text(_currentPath, maxLines: 1),
+          Text(_currentPath.pathString(), maxLines: 1),
           blueDivider,
           Expanded(
             child: FutureBuilder(
@@ -114,7 +130,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
     final tapedContainerId = _tapedContainer.id;
     final cmdResult = await Process.run(
       dockerCommand(),
-      ["exec", tapedContainerId, "ls", _currentPath, "-al"],
+      ["exec", tapedContainerId, "ls", _currentPath.pathString(), "-al"],
       runInShell: true,
     );
 
