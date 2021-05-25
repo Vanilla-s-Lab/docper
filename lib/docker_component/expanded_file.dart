@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:untitled/bordered_container.dart';
 import 'package:untitled/docker_component/file_widget.dart';
@@ -97,6 +99,14 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         title: Text("Container ID: " + _tapedContainer.id),
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton(
+        // https://stackoverflow.com/questions/51125024/there-are-multiple-heroes-that-share-the-same-tag-within-a-subtree
+        heroTag: null,
+
+        onPressed: () => importFile(context),
+        tooltip: "Import file",
+        child: Icon(Icons.archive),
+      ),
       body: BorderedContainer(
         child: Column(children: [
           blueDivider,
@@ -152,5 +162,21 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         // https://stackoverflow.com/questions/57730318/how-to-get-first-letter-of-string-in-flutter-dart
         .map((e) => ContainerFile(e.first[0], e.toList()[8], e.toList()))
         .toList();
+  }
+
+  void importFile(BuildContext context) async {
+    // https://pub.dev/packages/filesystem_picker
+    final String path = await FilesystemPicker.open(
+      context: context,
+      rootDirectory: await getApplicationDocumentsDirectory(),
+      title: "Choose file to import",
+    );
+
+    await Process.run(
+      dockerCommand(),
+      ["cp", path, "${_tapedContainer.id}:${_currentPath.pathString()}"],
+      runInShell: true,
+    );
+    setState(() => {_containerFileListFuture = _newContainerFilesFuture()});
   }
 }
