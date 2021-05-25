@@ -35,8 +35,6 @@ dependencies:
   # https://pub.dev/packages/responsive_grid
   responsive_grid: ^2.0.0
 
-  # https://pub.dev/packages/path_provider
-  path_provider: ^2.0.1
   # https://pub.dev/packages/filesystem_picker
   filesystem_picker: ^1.0.4
 
