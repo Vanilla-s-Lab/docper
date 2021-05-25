@@ -44,11 +44,21 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
 
   @override
   Widget build(BuildContext context) {
+    final centerAppBar = AppBar(title: Text("File List"), centerTitle: true);
     if (_tapedContainer == null) {
       return Scaffold(
-          appBar: AppBar(title: Text("File List"), centerTitle: true),
+          appBar: centerAppBar,
           body: BorderedContainer(
             child: Center(child: Text("Tap a container to view files.")),
+          ));
+    }
+
+    if (!_tapedContainer.isRunning()) {
+      return Scaffold(
+          appBar: centerAppBar,
+          body: BorderedContainer(
+            child:
+                Center(child: Text("Not support stopped container yet : ( ")),
           ));
     }
 
@@ -83,6 +93,8 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   }
 
   Future<List<ContainerFile>> _newContainerFilesFuture() async {
+    if (!_tapedContainer.isRunning()) return [];
+
     final tapedContainerId = _tapedContainer.id;
     final cmdResult = await Process.run(
       dockerCommand(),
