@@ -1,12 +1,16 @@
 import 'dart:io';
 
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/docker_component/pojos/container_file.dart';
+import 'package:untitled/docker_component/pojos/events.dart';
 
 class FileWidget extends StatelessWidget {
   final ContainerFile fileInfo;
+  final EventBus _tapFileBus;
 
-  const FileWidget(this.fileInfo, {Key key}) : super(key: key);
+  const FileWidget(this.fileInfo, this._tapFileBus, {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,7 @@ class FileWidget extends StatelessWidget {
       message: fileInfo.rawData.toString(),
       verticalOffset: -65,
       child: InkWell(
-        onTap: () {},
+        onTap: () => _tapFileBus.fire(TapFileEvent(fileInfo)),
         child: Container(
           // https://stackoverflow.com/questions/50186555/how-to-set-margin-for-a-button-in-flutter
           margin: const EdgeInsets.all(7.0),

@@ -1,3 +1,4 @@
+import 'package:untitled/docker_component/pojos/container_file.dart';
 import 'package:untitled/docker_component/pojos/container_info.dart';
 
 class DockerIsRunningEvent {
@@ -12,4 +13,10 @@ class TapContainerEvent {
 
 class RefreshAllEvent {
   RefreshAllEvent();
+}
+
+class TapFileEvent {
+  ContainerFile containerFile;
+
+  TapFileEvent(this.containerFile);
 }

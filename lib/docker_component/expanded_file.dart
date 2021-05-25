@@ -24,12 +24,15 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   Future<List<ContainerFile>> _containerFileListFuture;
   String _currentPath = "/";
 
+  EventBus _tapFileBus = EventBus();
+
   @override
   void initState() {
     super.initState();
     widget._expandedBus.on<TapContainerEvent>().listen((event) {
       setState(() {
         _tapedContainer = event.containerInfo;
+        _currentPath = "/";
         _containerFileListFuture = _newContainerFilesFuture();
       });
     });
@@ -39,6 +42,16 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         _tapedContainer = null;
         _currentPath = "/";
       });
+    });
+
+    _tapFileBus.on<TapFileEvent>().listen((event) {
+      final tapedFile = event.containerFile;
+      if (tapedFile.type() == FileSystemEntityType.directory) {
+        setState(() {
+          _currentPath += tapedFile.fileName + "/";
+          _containerFileListFuture = _newContainerFilesFuture();
+        });
+      }
     });
   }
 
@@ -78,10 +91,10 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
               future: _containerFileListFuture,
               builder: (buildContext, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final containerFiles = snapshot.data as List<ContainerFile>;
-                  final fileWidgets = containerFiles.map((e) => FileWidget(e));
+                  final files = snapshot.data as List<ContainerFile>;
+                  final widgets = files.map((e) => FileWidget(e, _tapFileBus));
                   return ResponsiveGridList(
-                    children: [...fileWidgets],
+                    children: [...widgets],
                     desiredItemWidth: 71,
                   );
                 }
@@ -117,7 +130,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         .map((e) => e.split(" "))
         .map((e) => e.where((element) => element.isNotEmpty))
         // https://stackoverflow.com/questions/57730318/how-to-get-first-letter-of-string-in-flutter-dart
-        .map((e) => ContainerFile(e.first[0], e.last, e.toList()))
+        .map((e) => ContainerFile(e.first[0], e.toList()[8], e.toList()))
         .toList();
   }
 }
