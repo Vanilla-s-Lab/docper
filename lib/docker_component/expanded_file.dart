@@ -100,7 +100,11 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       body: BorderedContainer(
         child: Column(children: [
           blueDivider,
-          Text(_currentPath.pathString(), maxLines: 1),
+          Text(
+            _currentPath.pathString(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           blueDivider,
           Expanded(
             child: FutureBuilder(
