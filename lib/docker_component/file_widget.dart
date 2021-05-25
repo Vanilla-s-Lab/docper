@@ -14,16 +14,6 @@ class FileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData fileIcon = Icons.help;
-    switch (fileInfo.type()) {
-      case FileSystemEntityType.file:
-        fileIcon = Icons.description;
-        break;
-      case FileSystemEntityType.directory:
-        fileIcon = Icons.folder;
-        break;
-    }
-
     return Tooltip(
       message: fileInfo.rawData.toString(),
       verticalOffset: -65,
@@ -36,7 +26,7 @@ class FileWidget extends StatelessWidget {
           width: 71,
           child: Column(
             children: [
-              Icon(fileIcon),
+              Icon(fileInfo.icon()),
               Text(fileInfo.fileName,
                   textAlign: TextAlign.center,
                   maxLines: 2,
