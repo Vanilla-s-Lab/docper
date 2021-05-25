@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 import 'package:untitled/bordered_container.dart';
+import 'package:untitled/docker_component/file_widget.dart';
 import 'package:untitled/docker_component/pojos/container_file.dart';
 import 'package:untitled/docker_component/pojos/container_info.dart';
 import 'package:untitled/docker_component/pojos/events.dart';
@@ -56,16 +58,26 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         centerTitle: true,
       ),
       body: BorderedContainer(
-        child: FutureBuilder(
-          future: _containerFileListFuture,
-          builder: (buildContext, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Center(child: CircularProgressIndicator());
-            }
+        child: Column(children: [
+          Text(_currentPath, maxLines: 1),
+          Expanded(
+            child: FutureBuilder(
+              future: _containerFileListFuture,
+              builder: (buildContext, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final containerFiles = snapshot.data as List<ContainerFile>;
+                  final fileWidgets = containerFiles.map((e) => FileWidget(e));
+                  return ResponsiveGridList(
+                    children: [...fileWidgets],
+                    desiredItemWidth: 71,
+                  );
+                }
 
-            return Center(child: CircularProgressIndicator());
-          },
-        ),
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -90,7 +102,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         .map((e) => e.split(" "))
         .map((e) => e.where((element) => element.isNotEmpty))
         // https://stackoverflow.com/questions/57730318/how-to-get-first-letter-of-string-in-flutter-dart
-        .map((e) => ContainerFile(e.first[0], e.last))
+        .map((e) => ContainerFile(e.first[0], e.last, e.toList()))
         .toList();
   }
 }

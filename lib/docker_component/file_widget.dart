@@ -20,10 +20,29 @@ class FileWidget extends StatelessWidget {
         break;
     }
 
-    return Container(
-      height: 100,
-      width: 100,
-      child: Column(children: []),
+    return Tooltip(
+      message: fileInfo.rawData.toString(),
+      verticalOffset: -65,
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          // https://stackoverflow.com/questions/50186555/how-to-set-margin-for-a-button-in-flutter
+          margin: const EdgeInsets.all(7.0),
+          height: 62,
+          width: 71,
+          child: Column(
+            children: [
+              Icon(fileIcon),
+              Text(fileInfo.fileName,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+
+                  // https://api.flutter.dev/flutter/widgets/Text-class.html
+                  overflow: TextOverflow.ellipsis),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

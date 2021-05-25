@@ -5,7 +5,9 @@ class ContainerFile {
   String fileType;
   String fileName;
 
-  ContainerFile(this.fileType, this.fileName);
+  List<String> rawData;
+
+  ContainerFile(this.fileType, this.fileName, this.rawData);
 
   FileSystemEntityType type() {
     switch (fileType) {
