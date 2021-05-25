@@ -62,6 +62,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
           ));
     }
 
+    final blueDivider = Divider(color: Colors.blue);
     return Scaffold(
       appBar: AppBar(
         title: Text("Container ID: " + _tapedContainer.id),
@@ -69,7 +70,9 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       ),
       body: BorderedContainer(
         child: Column(children: [
+          blueDivider,
           Text(_currentPath, maxLines: 1),
+          blueDivider,
           Expanded(
             child: FutureBuilder(
               future: _containerFileListFuture,
