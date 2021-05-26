@@ -9,7 +9,11 @@ class ContainerFile {
 
   List<String> rawData;
 
-  ContainerFile(this.fileType, this.fileName, this.rawData);
+  ContainerFile(this.fileType, this.fileName, List<String> rawData) {
+    final String tailString = rawData.sublist(8, rawData.length).join(" ");
+    this.rawData = rawData.sublist(0, 9);
+    this.rawData[8] = tailString;
+  }
 
   FileSystemEntityType type() {
     switch (fileType) {
