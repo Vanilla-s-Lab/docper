@@ -96,7 +96,11 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
 
   @override
   Widget build(BuildContext context) {
-    final centerAppBar = AppBar(title: Text("File List"), centerTitle: true);
+    final centerAppBar = AppBar(
+      title: Text("File List"),
+      elevation: 0,
+      centerTitle: true,
+    );
     if (_tapedContainer == null) {
       return Scaffold(
           appBar: centerAppBar,
@@ -121,7 +125,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         actions: [
           // https://stackoverflow.com/questions/64525713/how-to-make-a-squared-app-bar-button-in-flutter
           Padding(
-            padding: EdgeInsets.only(right: 20.0, top: 10.0, bottom: 10.0),
+            padding: EdgeInsets.only(right: 20.0),
             child: Container(
               width: 35,
               child: IconButton(
@@ -137,7 +141,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         // https://stackoverflow.com/questions/51125024/there-are-multiple-heroes-that-share-the-same-tag-within-a-subtree
         heroTag: null,
 
-        onPressed: () => importFile, tooltip: "Import file",
+        onPressed: () => importFile(), tooltip: "Import file",
         child: Icon(Icons.archive),
       ),
       body: BorderedContainer(

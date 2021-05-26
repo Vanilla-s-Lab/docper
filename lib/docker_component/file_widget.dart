@@ -24,7 +24,7 @@ class FileWidget extends StatelessWidget {
           width: 71,
           child: Column(
             children: [
-              Icon(fileInfo.icon()),
+              Icon(fileInfo.icon(), color: Colors.blue),
               Text(fileInfo.fileName,
                   textAlign: TextAlign.center,
                   maxLines: 2,
