@@ -35,8 +35,11 @@ dependencies:
   # https://pub.dev/packages/responsive_grid
   responsive_grid: ^2.0.0
 
-  # https://pub.dev/packages/filesystem_picker
-  filesystem_picker: ^1.0.4
+  # https://pub.dev/packages/file_selector
+  file_selector: ^0.8.2
+  file_selector_linux: ^0.0.2
+  file_selector_macos: ^0.0.3
+  file_selector_windows: ^0.0.2
 
 dev_dependencies:
   flutter_test:

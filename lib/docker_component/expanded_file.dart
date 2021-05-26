@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
-import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'package:untitled/bordered_container.dart';
@@ -164,23 +164,14 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   }
 
   void importFile(BuildContext context) async {
-    // https://stackoverflow.com/questions/25498128/how-do-i-tell-where-the-users-home-directory-is-in-dart
-    String homePathStr = Platform.environment['HOME'];
-    if (Platform.isWindows) homePathStr = Platform.environment['UserProfile'];
-
-    // https://pub.dev/packages/filesystem_picker
-    final String path = await FilesystemPicker.open(
-      context: context,
-      rootName: "Home",
-      rootDirectory: Directory(homePathStr),
-      title: "Choose file to import",
-    );
-
-    await Process.run(
-      dockerCommand(),
-      ["cp", path, "${_tapedContainer.id}:${_currentPath.pathString()}"],
-      runInShell: true,
-    );
+    List<XFile> chosenFiles = await openFiles();
+    chosenFiles.map((e) => e.path).forEach((element) async {
+      await Process.run(
+        dockerCommand(),
+        ["cp", element, "${_tapedContainer.id}:${_currentPath.pathString()}"],
+        runInShell: true,
+      );
+    });
     setState(() => {_containerFileListFuture = _newContainerFilesFuture()});
   }
 }
