@@ -34,6 +34,15 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
   List<String> _currentPath = [];
   EventBus _tapFileBus = EventBus();
 
+  // https://flutter.dev/docs/cookbook/forms/retrieve-input
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +78,11 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
           _containerFileListFuture = _newContainerFilesFuture();
         });
       }
+
+      if (tapedFile.type() != FileSystemEntityType.notFound) {
+        // file type != not found, taped file is file or link.
+
+      }
     });
   }
 
@@ -87,8 +101,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       return Scaffold(
           appBar: centerAppBar,
           body: BorderedContainer(
-            child:
-                Center(child: Text("Not support stopped container yet : ( ")),
+            child: Center(child: Text("Not support stopped container yet. ")),
           ));
     }
 
@@ -97,13 +110,26 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       appBar: AppBar(
         title: Text("Container ID: " + _tapedContainer.id),
         centerTitle: true,
+        actions: [
+          // https://stackoverflow.com/questions/64525713/how-to-make-a-squared-app-bar-button-in-flutter
+          Padding(
+            padding: EdgeInsets.only(right: 20.0, top: 10.0, bottom: 10.0),
+            child: Container(
+              width: 35,
+              child: IconButton(
+                onPressed: createFolder,
+                icon: Icon(Icons.add),
+                tooltip: "Create Folder",
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         // https://stackoverflow.com/questions/51125024/there-are-multiple-heroes-that-share-the-same-tag-within-a-subtree
         heroTag: null,
 
-        onPressed: () => importFile(context),
-        tooltip: "Import file",
+        onPressed: () => importFile, tooltip: "Import file",
         child: Icon(Icons.archive),
       ),
       body: BorderedContainer(
@@ -163,7 +189,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         .toList();
   }
 
-  void importFile(BuildContext context) async {
+  void importFile() async {
     List<XFile> chosenFiles = await openFiles();
     chosenFiles.map((e) => e.path).forEach((element) async {
       await Process.run(
@@ -173,5 +199,50 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       );
     });
     setState(() => {_containerFileListFuture = _newContainerFilesFuture()});
+  }
+
+  void createFolder() {
+    void _execMkdir(String text) async {
+      final mkdirTarget = _currentPath.pathString() + "/" + text;
+      await Process.run(
+        dockerCommand(),
+        ["exec", _tapedContainer.id, "mkdir", mkdirTarget],
+        runInShell: true,
+      );
+      setState(() => {_containerFileListFuture = _newContainerFilesFuture()});
+    }
+
+    final inputTextField = TextField(
+      // https://flutter.dev/docs/cookbook/forms/focus
+      autofocus: true,
+      controller: myController,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Folder name',
+      ),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Create Folder"),
+        // https://api.flutter.dev/flutter/material/TextField-class.html
+        content: inputTextField,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _execMkdir(myController.text);
+              myController.clear();
+            },
+            child: Text('Create'),
+          ),
+        ],
+      ),
+    );
   }
 }
