@@ -61,7 +61,7 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
       });
     });
 
-    _tapFileBus.on<TapFileEvent>().listen((event) {
+    _tapFileBus.on<TapFileEvent>().listen((event) async {
       final tapedFile = event.containerFile;
       if (tapedFile.type() == FileSystemEntityType.directory) {
         setState(() {
@@ -79,9 +79,17 @@ class _FileExplorerExpendedState extends State<FileExplorer> {
         });
       }
 
-      if (tapedFile.type() != FileSystemEntityType.notFound) {
-        // file type != not found, taped file is file or link.
-
+      if (tapedFile.type() == FileSystemEntityType.file) {
+        // https://pub.dev/documentation/file_selector/latest/
+        final path = await getSavePath(suggestedName: tapedFile.fileName);
+        if (path != null) {
+          final filePath = _currentPath.pathString() + "/" + tapedFile.fileName;
+          await Process.run(
+            dockerCommand(),
+            ["cp", "${_tapedContainer.id}:$filePath", path],
+            runInShell: true,
+          );
+        }
       }
     });
   }
