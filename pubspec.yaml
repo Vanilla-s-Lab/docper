@@ -41,6 +41,10 @@ dependencies:
   file_selector_macos: ^0.0.3
   file_selector_windows: ^0.0.2
 
+  # Use for "which" command on macOS.
+  # https://pub.dev/packages/process_run
+  process_run: ^0.12.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
