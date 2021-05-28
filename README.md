@@ -1,6 +1,6 @@
 # docper
 
-A new Flutter project.
+Docker container file transfer tool.
 
 ## Getting Started
 

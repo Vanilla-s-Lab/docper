@@ -1,5 +1,5 @@
 name: docper
-description: A new Flutter project.
+description: Docker container file transfer tool.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
