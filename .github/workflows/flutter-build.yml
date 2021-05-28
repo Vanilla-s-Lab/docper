@@ -22,12 +22,12 @@ jobs:
       - name: Check out Vanilla-s-Lab/docper
         uses: actions/checkout@master
 
-      - name: Linux setup CMake
+      - name: Linux - Setup CMake
         uses: jwlawson/actions-setup-cmake@master
         # https://www.edwardthomson.com/blog/github_actions_14_conditionals_with_a_matrix.html
         if: matrix.os == 'ubuntu-latest'
 
-      - name: Linux install additional packages
+      - name: Linux - Install additional packages
         # https://github.com/flutter/flutter/issues/59750
         run: sudo apt update && sudo apt install clang ninja-build libgtk-3-dev -y
         if: matrix.os == 'ubuntu-latest'
