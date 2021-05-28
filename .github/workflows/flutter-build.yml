@@ -20,17 +20,15 @@ jobs:
             platform: linux
             build_path: ./build/linux/x64/release/bundle/
             compress_cmd: tar -czvf linux-bundle.tar.gz *
-            zip_name: linux-bundle.tar.gz
           - os: macos-latest
             platform: macos
             build_path: ./build/macos/Build/Products/Release/
-            compress_cmd: zip macOS-Release.zip *
-            zip_name: macOS-Release.zip
+            # https://superuser.com/questions/505034/compress-files-from-os-x-terminal
+            compress_cmd: zip -vr macOS-Release.zip *
           - os: windows-latest
             platform: windows
             build_path: .\build\windows\runner\Release\
             compress_cmd: Compress-Archive * Windows-Release.zip
-            zip_name: Windows-Release.zip
 
     steps:
       - name: Setup flutter
@@ -63,6 +61,9 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@master
         with:
-          files: ${{ matrix.zip_name }}
+          files: |
+            ${{ matrix.build_path }}./linux-bundle.tar.gz
+            ${{ matrix.build_path }}./macOS-Release.zip
+            ${{ matrix.build_path }}./Windows-Release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
