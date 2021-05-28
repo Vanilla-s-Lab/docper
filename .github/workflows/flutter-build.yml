@@ -1,5 +1,10 @@
 name: Flutter Build
-on: [ push ]
+
+# https://github.com/softprops/action-gh-release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   Flutter-Build:
@@ -9,6 +14,23 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
+        # https://github.com/actions/upload-release-asset/issues/16#issuecomment-662186555
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            build_path: ./build/linux/x64/release/bundle/
+            compress_cmd: tar -czvf linux-bundle.tar.gz *
+            zip_name: linux-bundle.tar.gz
+          - os: macos-latest
+            platform: macos
+            build_path: ./build/macos/Build/Products/Release/
+            compress_cmd: zip macOS-Release.zip *
+            zip_name: macOS-Release.zip
+          - os: windows-latest
+            platform: windows
+            build_path: .\build\windows\runner\Release\
+            compress_cmd: Compress-Archive * Windows-Release.zip
+            zip_name: Windows-Release.zip
 
     steps:
       - name: Setup flutter
@@ -17,9 +39,9 @@ jobs:
           channel: 'stable'
 
       - name: Flutter config enable desktop
-        run: flutter config --enable-linux-desktop --enable-macos-desktop --enable-windows-desktop
+        run: flutter config --enable-${{ matrix.platform }}-desktop
 
-      - name: Check out Vanilla-s-Lab/docper
+      - name: Checkout repo Vanilla-s-Lab/docper
         uses: actions/checkout@master
 
       - name: Linux - Setup CMake
@@ -32,16 +54,15 @@ jobs:
         run: sudo apt update && sudo apt install clang ninja-build libgtk-3-dev -y
         if: matrix.os == 'ubuntu-latest'
 
-      - name: Linux - Build & Compress
+      - name: Flutter build & Compress
         # https://www.cyberciti.biz/faq/how-to-create-tar-gz-file-in-linux-using-command-line/
-        run: flutter build linux && cd ./build/linux/x64/release/ && tar -czvf linux-bundle.tar.gz bundle/
-        if: matrix.os == 'ubuntu-latest'
+        run: |
+          flutter build ${{ matrix.platform }}
+          cd ${{ matrix.build_path }} && ${{ matrix.compress_cmd }}
 
-      - name: macOS - Build & Compress
-        run: flutter build macos && cd ./build/macos/Build/Products/ && zip macOS-Release.zip Release/*
-        if: matrix.os == 'macos-latest'
-
-      - name: Windows - Build & Compress
-        # https://superuser.com/questions/201371/create-zip-folder-from-the-command-line-windows
-        run: flutter build windows && cd .\build\windows\runner\ && Compress-Archive Release\ Windows-Release.zip
-        if: matrix.os == 'windows-latest'
+      - name: Release
+        uses: softprops/action-gh-release@master
+        with:
+          files: ${{ matrix.zip_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
