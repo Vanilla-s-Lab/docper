@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
-set(BINARY_NAME "untitled")
-set(APPLICATION_ID "com.example.untitled")
+set(BINARY_NAME "docper")
+set(APPLICATION_ID "org.hydev.docper")
 
 cmake_policy(SET CMP0063 NEW)
 

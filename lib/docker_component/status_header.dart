@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/docker_component/pojos/events.dart';
-import 'package:untitled/docker_finder.dart';
+import 'package:docper/docker_component/pojos/events.dart';
+import 'package:docper/docker_finder.dart';
 
 class DockerHeader extends StatefulWidget {
   final EventBus _drawerBus;

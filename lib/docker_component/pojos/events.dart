@@ -1,5 +1,5 @@
-import 'package:untitled/docker_component/pojos/container_file.dart';
-import 'package:untitled/docker_component/pojos/container_info.dart';
+import 'package:docper/docker_component/pojos/container_file.dart';
+import 'package:docper/docker_component/pojos/container_info.dart';
 
 class DockerIsRunningEvent {
   DockerIsRunningEvent();

@@ -1,7 +1,7 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/docker_component/pojos/container_file.dart';
-import 'package:untitled/docker_component/pojos/events.dart';
+import 'package:docper/docker_component/pojos/container_file.dart';
+import 'package:docper/docker_component/pojos/events.dart';
 
 class FileWidget extends StatelessWidget {
   final ContainerFile fileInfo;

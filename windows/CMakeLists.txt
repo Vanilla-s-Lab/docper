@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(untitled LANGUAGES CXX)
+project(docper LANGUAGES CXX)
 
-set(BINARY_NAME "untitled")
+set(BINARY_NAME "docper")
 
 cmake_policy(SET CMP0063 NEW)
 
